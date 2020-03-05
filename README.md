@@ -8,6 +8,13 @@
 <img src="./etc/emoji-github_screenshot_01.png" width="693" height="777"/>
 </p>
 
+## Usage
+
+Simply call this function from minibuffer.
+
+```
+M-x emoji-github
+```
 
 ## Contribution
 
