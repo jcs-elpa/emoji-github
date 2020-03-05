@@ -222,6 +222,7 @@
     (while (<= cnt emoji-github-columns)
       (push (list (format title cnt) 30 t) lst)
       (setq cnt (1+ cnt)))
+    (setq lst (reverse lst))
     (vconcat lst)))
 
 (defun emoji-github--format-item (item)
