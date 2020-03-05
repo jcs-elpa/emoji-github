@@ -5,7 +5,7 @@
 > Display list of GitHub's emoji.  (cheat sheet)
 
 <p align="center">
-<img src="./etc/emoji-github_screenshot_01.png" width="693" height="777"/>
+<img src="./etc/emoji-github_screenshot_01.png" width="436" height="518"/>
 </p>
 
 ## Usage
