@@ -6,7 +6,7 @@
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; Description: Display list of GitHub's emoji.  (cheat sheet)
 ;; Keyword: list github emoji display handy
-;; Version: 0.1.0
+;; Version: 0.1.2
 ;; Package-Requires: ((emacs "24.4") (emojify "1.0"))
 ;; URL: https://github.com/jcs090218/emoji-github
 
