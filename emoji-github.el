@@ -354,13 +354,17 @@
     "small_red_triangle_down" "shipit" "")
   "List of GitHub's emoji that we are going to displayed.")
 
+(defvar emoji-github--column-size 30
+  "Character size for each column.")
+
+
 (defun emoji-github--format ()
   "Return the list format from the display emoji."
   (let ((title "List %s")
         (lst '())
         (cnt 1))
     (while (<= cnt emoji-github-columns)
-      (push (list (format title cnt) 30 t) lst)
+      (push (list (format title cnt) emoji-github--column-size t) lst)
       (setq cnt (1+ cnt)))
     (setq lst (reverse lst))
     (vconcat lst)))
