@@ -53,7 +53,8 @@
   "Name of the GitHub emoji buffer.")
 
 (defconst emoji-github--list
-  '(;; People
+  '(;; --- People -----------------------------------------------------------
+    "##==-- People --==##" "" ""
     "bowtie" "smile" "laughing"
     "blush" "smiley" "relaxed"
     "smirk" "heart_eyes" "kissing_heart"
@@ -118,7 +119,8 @@
     "godmode" "hurtrealbad" "rage1"
     "rage2" "rage3" "rage4"
     "suspect" "trollface" ""
-    ;; Nature
+    ;; --- Nature -----------------------------------------------------------
+    "##==-- Nature --==##" "" ""
     "sunny" "umbrella" "cloud"
     "snowflake" "snowman" "zap"
     "cyclone" "foggy" "ocean"
@@ -158,7 +160,8 @@
     "earth_americas" "earth_asia" "volcano"
     "milky_way" "partly_sunny" "octocat"
     "squirrel" "" ""
-    ;; Objects
+    ;; --- Objects -----------------------------------------------------------
+    "##==-- Objects --==##" "" ""
     "bamboo" "gift_heart" "dolls"
     "school_satchel" "mortar_board" "flags"
     "fireworks" "sparkler" "wind_chime"
@@ -246,7 +249,8 @@
     "banana" "pear" "pineapple"
     "sweet_potato" "eggplant" "tomato"
     "corn" "" ""
-    ;; Places
+    ;; --- Places -----------------------------------------------------------
+    "##==-- Places --==##" "" ""
     "house" "house_with_garden" "school"
     "office" "post_office" "love_hotel"
     "hotel" "wedding" "church"
@@ -282,7 +286,8 @@
     "fr" "es" "it"
     "ru" "gb" "uk"
     "de" "" ""
-    ;; Symbols
+    ;; --- Symbols -----------------------------------------------------------
+    "##==-- Symbols --==##" "" ""
     "one" "two" "three"
     "four" "five" "six"
     "seven" "eight" "nine"
@@ -363,7 +368,8 @@
 (defun emoji-github--format-item (item)
   "Return the string form by ITEM (emoji)."
   (if (not (string-empty-p item))
-      (format ":%s: %s" item item)
+      (cond ((string-match-p "##==--" item) item)  ; For title.
+            (t (format ":%s: %s" item item)))      ; For emoji.
     ""))
 
 (defun emoji-github--get-entries ()
