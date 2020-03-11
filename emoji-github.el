@@ -395,7 +395,7 @@
 (define-derived-mode emoji-github-mode tabulated-list-mode
   "emoji-github-mode"
   "Major mode for displaying GitHub's emoji."
-  :group 'emp
+  :group 'emoji-github
   (setq tabulated-list-format (emoji-github--format))
   (setq tabulated-list-padding 1)
   (setq-local tabulated-list--header-string "URL: https://gist.github.com/rxaviers/7360908")
