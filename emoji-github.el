@@ -443,7 +443,6 @@ always display all the emoji that are supported by GitHub."
     ;; Supply missing emoji that GitHub supported.
     (dolist (missing-emoji emoji-github--api-list)
       (unless (emoji-github--is-contain-list-string emoji-github--constant-list missing-emoji)
-        (message "me: %s" missing-emoji)
         (push missing-emoji other-list)))
     (setq emoji-github--full-list (reverse emoji-github--full-list))
     (setq emoji-github--full-list (append emoji-github--full-list other-list))))
