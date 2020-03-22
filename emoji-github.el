@@ -6,8 +6,8 @@
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; Description: Display list of GitHub's emoji.  (cheat sheet)
 ;; Keyword: list github emoji display handy
-;; Version: 0.1.2
-;; Package-Requires: ((emacs "24.4") (emojify "1.0"))
+;; Version: 0.2.0
+;; Package-Requires: ((emacs "24.4") (emojify "1.0") (request "0.3.0"))
 ;; URL: https://github.com/jcs090218/emoji-github
 
 ;; This file is NOT part of GNU Emacs.
@@ -35,6 +35,7 @@
 (require 'tabulated-list)
 
 (require 'emojify)
+(require 'request)
 
 
 (defgroup emoji-github nil
@@ -52,9 +53,12 @@
 (defconst emoji-github--buffer-name "*GitHub Emoji*"
   "Name of the GitHub emoji buffer.")
 
-(defconst emoji-github--list
+(defconst emoji-github--api-url "https://api.github.com/emojis"
+  "Store GitHub emoji's URL.")
+
+(defconst emoji-github--constant-list
   '(;; --- People -----------------------------------------------------------
-    "##==-- People --==##" "" ""
+    "##==-- People --==##"
     "bowtie" "smile" "laughing"
     "blush" "smiley" "relaxed"
     "smirk" "heart_eyes" "kissing_heart"
@@ -118,9 +122,9 @@
     "feelsgood" "finnadie" "goberserk"
     "godmode" "hurtrealbad" "rage1"
     "rage2" "rage3" "rage4"
-    "suspect" "trollface" ""
+    "suspect" "trollface"
     ;; --- Nature -----------------------------------------------------------
-    "##==-- Nature --==##" "" ""
+    "##==-- Nature --==##"
     "sunny" "umbrella" "cloud"
     "snowflake" "snowman" "zap"
     "cyclone" "foggy" "ocean"
@@ -159,9 +163,9 @@
     "first_quarter_moon_with_face" "moon" "earth_africa"
     "earth_americas" "earth_asia" "volcano"
     "milky_way" "partly_sunny" "octocat"
-    "squirrel" "" ""
+    "squirrel"
     ;; --- Objects -----------------------------------------------------------
-    "##==-- Objects --==##" "" ""
+    "##==-- Objects --==##"
     "bamboo" "gift_heart" "dolls"
     "school_satchel" "mortar_board" "flags"
     "fireworks" "sparkler" "wind_chime"
@@ -248,9 +252,9 @@
     "strawberry" "peach" "melon"
     "banana" "pear" "pineapple"
     "sweet_potato" "eggplant" "tomato"
-    "corn" "" ""
+    "corn"
     ;; --- Places -----------------------------------------------------------
-    "##==-- Places --==##" "" ""
+    "##==-- Places --==##"
     "house" "house_with_garden" "school"
     "office" "post_office" "love_hotel"
     "hotel" "wedding" "church"
@@ -285,9 +289,9 @@
     "kr" "cn" "us"
     "fr" "es" "it"
     "ru" "gb" "uk"
-    "de" "" ""
+    "de"
     ;; --- Symbols -----------------------------------------------------------
-    "##==-- Symbols --==##" "" ""
+    "##==-- Symbols --==##"
     "one" "two" "three"
     "four" "five" "six"
     "seven" "eight" "nine"
@@ -351,12 +355,29 @@
     "black_circle" "white_circle" "red_circle"
     "large_blue_circle" "large_blue_diamond" "large_orange_diamond"
     "small_blue_diamond" "small_orange_diamond" "small_red_triangle"
-    "small_red_triangle_down" "shipit" "")
+    "small_red_triangle_down" "shipit"
+    ;; --- Others -----------------------------------------------------------
+    "##==-- Others --==##")
   "List of GitHub's emoji that we are going to displayed.")
+
+(defvar emoji-github--api-list '()
+  "Get the full list of GitHub emoji using GitHub request.")
+
+(defvar emoji-github--full-list '()
+  "Mixed of the GitHub Emoji API list and the local constant list.")
 
 (defvar emoji-github--column-size 30
   "Character size for each column.")
 
+
+(defun emoji-github--is-contain-list-string (in-list in-str)
+  "Check if IN-STR contain in any string in the IN-LIST."
+  (cl-some #'(lambda (lb-sub-str) (string= lb-sub-str in-str)) in-list))
+
+(defun emoji-github--revert-table ()
+  "Revert the `tabulated-list' table."
+  (tabulated-list-revert)
+  (tabulated-list-print-fake-header))
 
 (defun emoji-github--format ()
   "Return the list format from the display emoji."
@@ -369,33 +390,119 @@
     (setq lst (reverse lst))
     (vconcat lst)))
 
+(defun emoji-github--is-title-p (str)
+  "Check if STR the title string."
+  (string-match-p "##==--" str))
+
 (defun emoji-github--format-item (item)
   "Return the string form by ITEM (emoji)."
   (if (not (string-empty-p item))
-      (cond ((string-match-p "##==--" item) item)  ; For title.
+      (cond ((emoji-github--is-title-p item) item)  ; For title.
             (t (format ":%s: %s" item item)))      ; For emoji.
     ""))
 
+(defun emoji-github--get-github-emoji ()
+  "Get the GitHub emoji by `emoji-github--api-url'."
+  (setq emoji-github--api-list '())  ; Clean before use.
+  (message "Getting emoji data from '%s'" emoji-github--api-url)
+  (request
+    emoji-github--api-url
+    :type "GET"
+    :parser 'json-read
+    :success
+    (cl-function
+     (lambda (&key data  &allow-other-keys)
+       (dolist (item data)
+         (push (symbol-name (car item)) emoji-github--api-list))
+       (emoji-github--filter-list)
+       (save-selected-window
+         (when (get-buffer emoji-github--buffer-name)
+           (with-current-buffer emoji-github--buffer-name
+             (setq tabulated-list-entries (emoji-github--get-entries))
+             (emoji-github--revert-table))))))
+    :error
+    ;; NOTE: Accept, error.
+    (cl-function
+     (lambda (&rest args &key _error-thrown &allow-other-keys)
+       (user-error "[ERROR] Error while getting GitHub Emoji API")))))
+
+(defun emoji-github--filter-list ()
+  "Filter all the emoji from the local constant list.
+To remove missing or add new emoji from GitHub Emoji API.  To ensure we will
+always display all the emoji that are supported by GitHub."
+  (setq emoji-github--full-list '())  ; Clean up before refresh.
+  (let ((index 0) (len (length emoji-github--constant-list))
+        (other-list '())
+        (local-emoji ""))
+    (while (< index len)
+      (setq local-emoji (nth index emoji-github--constant-list))
+      (when (or (emoji-github--is-title-p local-emoji)
+                (emoji-github--is-contain-list-string emoji-github--api-list local-emoji))
+        (push local-emoji emoji-github--full-list))
+      (setq index (1+ index)))
+    ;; Supply missing emoji that GitHub supported.
+    (dolist (missing-emoji emoji-github--api-list)
+      (unless (emoji-github--is-contain-list-string emoji-github--constant-list missing-emoji)
+        (message "me: %s" missing-emoji)
+        (push missing-emoji other-list)))
+    (setq emoji-github--full-list (reverse emoji-github--full-list))
+    (setq emoji-github--full-list (append emoji-github--full-list other-list))))
+
 (defun emoji-github--get-entries ()
   "Get all GitHub's emoji as list entry."
-  (let ((entries '()) (index (- (length emoji-github--list) emoji-github-columns)))
-    (while (>= index 0)
-      (let ((new-entry '()) (new-entry-value '()))
-        (let ((col-cnt (1- emoji-github-columns)) (col-val nil))
-          (while (>= col-cnt 0)
-            (setq col-val (nth (+ index col-cnt) emoji-github--list))
-            (push (emoji-github--format-item col-val) new-entry-value)
-            (setq col-cnt (1- col-cnt))))
+  (let* ((entries '())
+         (len (length emoji-github--full-list))
+         (index 0)
+         (last-row nil))
+    (while (or (< index len) last-row)
+      (let ((new-entry '()) (new-entry-value '())
+            (current-title "")
+            (meet-title-index 0)
+            (is-title nil) (col-cnt 0) (col-val nil)
+            (already-on-newline nil))
+
+        (while (and (not is-title) (< col-cnt emoji-github-columns))
+          (setq col-val (nth (+ index col-cnt) emoji-github--full-list))
+          (if (not col-val)
+              (push "" new-entry-value)  ; For the very last.
+            (setq is-title (emoji-github--is-title-p col-val))
+            (if (not is-title)  ; Prepare title variables.
+                (push (emoji-github--format-item col-val) new-entry-value)
+              (setq current-title col-val)
+              (setq already-on-newline (= col-cnt 0))
+              (setq meet-title-index (- emoji-github-columns (1+ col-cnt)))
+
+              (if already-on-newline
+                  (progn
+                    (push current-title new-entry-value)
+                    (while (< col-cnt emoji-github-columns)
+                      (push "" new-entry-value)
+                      (setq col-cnt (1+ col-cnt))))
+                (setq index (- index (1- col-cnt)))
+                (while (< col-cnt emoji-github-columns)
+                  (push "" new-entry-value)
+                  (setq col-cnt (1+ col-cnt))))))
+          (setq col-cnt (1+ col-cnt)))
+
+        (setq new-entry-value (reverse new-entry-value))
         (push (vconcat new-entry-value) new-entry)  ; Turn into vector.
         (push (number-to-string index) new-entry)
-        (push new-entry entries))
-      (setq index (- index emoji-github-columns)))
-    entries))
+        (push new-entry entries)
+
+        (setq index (+ index emoji-github-columns))
+        (setq index (- index meet-title-index)))
+      (if last-row
+          (setq last-row nil)
+        (when (>= index len) (setq last-row t))))
+
+    (reverse entries)))
 
 (define-derived-mode emoji-github-mode tabulated-list-mode
   "emoji-github-mode"
   "Major mode for displaying GitHub's emoji."
   :group 'emoji-github
+  (setq emoji-github--full-list '())
+  (emoji-github--get-github-emoji)
   (setq tabulated-list-format (emoji-github--format))
   (setq tabulated-list-padding 1)
   (setq-local tabulated-list--header-string "URL: https://gist.github.com/rxaviers/7360908")
