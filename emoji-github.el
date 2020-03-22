@@ -451,9 +451,8 @@ always display all the emoji that are supported by GitHub."
   "Get all GitHub's emoji as list entry."
   (let* ((entries '())
          (len (length emoji-github--full-list))
-         (index 0)
-         (last-row nil))
-    (while (or (< index len) last-row)
+         (index 0))
+    (while (< index len)
       (let ((new-entry '()) (new-entry-value '())
             (current-title "")
             (meet-title-index 0)
@@ -489,10 +488,7 @@ always display all the emoji that are supported by GitHub."
         (push new-entry entries)
 
         (setq index (+ index emoji-github-columns))
-        (setq index (- index meet-title-index)))
-      (if last-row
-          (setq last-row nil)
-        (when (>= index len) (setq last-row t))))
+        (setq index (- index meet-title-index))))
 
     (reverse entries)))
 
