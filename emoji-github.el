@@ -32,6 +32,7 @@
 
 ;;; Code:
 
+(require 'subr-x)
 (require 'tabulated-list)
 
 (require 'emojify)
