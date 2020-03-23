@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/jcs090218/emoji-github.svg?branch=master)](https://travis-ci.com/jcs090218/emoji-github)
-[![MELPA](https://melpa.org/packages/emoji-github-badge.svg)](https://melpa.org/#/emoji-github)  
+[![MELPA](https://melpa.org/packages/emoji-github-badge.svg)](https://melpa.org/#/emoji-github)
 [![MELPA Stable](https://stable.melpa.org/packages/emoji-github-badge.svg)](https://stable.melpa.org/#/emoji-github)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
