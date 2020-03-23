@@ -373,7 +373,7 @@
 
 (defun emoji-github--is-contain-list-string (in-list in-str)
   "Check if IN-STR contain in any string in the IN-LIST."
-  (cl-some #'(lambda (lb-sub-str) (string= lb-sub-str in-str)) in-list))
+  (cl-some (lambda (lb-sub-str) (string= lb-sub-str in-str)) in-list))
 
 (defun emoji-github--revert-table ()
   "Revert the `tabulated-list' table."
