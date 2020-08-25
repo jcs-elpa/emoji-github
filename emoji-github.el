@@ -38,7 +38,6 @@
 (require 'emojify)
 (require 'request)
 
-
 (defgroup emoji-github nil
   "Display list of GitHub's emoji.  (cheat sheet)"
   :prefix "emoji-github-"
@@ -370,10 +369,13 @@
 (defvar emoji-github--column-size 30
   "Character size for each column.")
 
+;;; Utils
 
 (defun emoji-github--is-contain-list-string (in-list in-str)
   "Check if IN-STR contain in any string in the IN-LIST."
   (cl-some (lambda (lb-sub-str) (string= lb-sub-str in-str)) in-list))
+
+;;; Core
 
 (defun emoji-github--revert-table ()
   "Revert the `tabulated-list' table."
@@ -382,9 +384,7 @@
 
 (defun emoji-github--format ()
   "Return the list format from the display emoji."
-  (let ((title "List %s")
-        (lst '())
-        (cnt 1))
+  (let ((title "List %s") (lst '()) (cnt 1))
     (while (<= cnt emoji-github-columns)
       (push (list (format title cnt) emoji-github--column-size t) lst)
       (setq cnt (1+ cnt)))
@@ -450,16 +450,12 @@ always display all the emoji that are supported by GitHub."
 
 (defun emoji-github--get-entries ()
   "Get all GitHub's emoji as list entry."
-  (let* ((entries '())
-         (len (length emoji-github--full-list))
-         (index 0))
+  (let* ((entries '()) (len (length emoji-github--full-list)) (index 0))
     (while (< index len)
       (let ((new-entry '()) (new-entry-value '())
-            (current-title "")
-            (meet-title-index 0)
+            (current-title "") (meet-title-index 0)
             (is-title nil) (col-cnt 0) (col-val nil)
             (already-on-newline nil))
-
         (while (and (not is-title) (< col-cnt emoji-github-columns))
           (setq col-val (nth (+ index col-cnt) emoji-github--full-list))
           (if (not col-val)
@@ -514,7 +510,6 @@ always display all the emoji that are supported by GitHub."
   (interactive)
   (pop-to-buffer emoji-github--buffer-name nil)
   (emoji-github-mode))
-
 
 (provide 'emoji-github)
 ;;; emoji-github.el ends here
