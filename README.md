@@ -1,10 +1,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![MELPA](https://melpa.org/packages/emoji-github-badge.svg)](https://melpa.org/#/emoji-github)
 [![MELPA Stable](https://stable.melpa.org/packages/emoji-github-badge.svg)](https://stable.melpa.org/#/emoji-github)
-[![CI](https://github.com/jcs-elpa/emoji-github/actions/workflows/test.yml/badge.svg)](https://github.com/jcs-elpa/emoji-github/actions/workflows/test.yml)
 
 # emoji-github
 > Display list of GitHub's emoji.  (cheat sheet)
+
+[![CI](https://github.com/jcs-elpa/emoji-github/actions/workflows/test.yml/badge.svg)](https://github.com/jcs-elpa/emoji-github/actions/workflows/test.yml)
 
 <p align="center">
   <img src="./etc/emoji-github_screenshot_01.png" width="436" height="518"/>
