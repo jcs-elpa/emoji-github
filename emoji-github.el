@@ -4,11 +4,10 @@
 ;; Created date 2020-03-05 10:58:18
 
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>
-;; Description: Display list of GitHub's emoji.  (cheat sheet)
-;; Keyword: list github emoji display handy
+;; URL: https://github.com/jcs-elpa/emoji-github
 ;; Version: 0.2.3
 ;; Package-Requires: ((emacs "24.4") (emojify "1.0") (request "0.3.0"))
-;; URL: https://github.com/jcs-elpa/emoji-github
+;; Keywords: list github emoji display handy
 
 ;; This file is NOT part of GNU Emacs.
 

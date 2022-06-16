@@ -2,6 +2,9 @@
          "0.2.3"
          "Display list of GitHub's emoji.  (cheat sheet)")
 
+(website-url "https://github.com/jcs-elpa/emoji-github")
+(keywords "list" "github" "emoji" "display" "handy")
+
 (package-file "emoji-github.el")
 
 (source "melpa")
