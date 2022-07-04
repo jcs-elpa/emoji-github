@@ -7,7 +7,7 @@
 ;; URL: https://github.com/jcs-elpa/emoji-github
 ;; Version: 0.2.3
 ;; Package-Requires: ((emacs "24.4") (emojify "1.0") (request "0.3.0"))
-;; Keywords: list github emoji display handy
+;; Keywords: convenience list github emoji display
 
 ;; This file is NOT part of GNU Emacs.
 
