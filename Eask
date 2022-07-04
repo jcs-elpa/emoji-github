@@ -3,7 +3,7 @@
          "Display list of GitHub's emoji.  (cheat sheet)")
 
 (website-url "https://github.com/jcs-elpa/emoji-github")
-(keywords "list" "github" "emoji" "display" "handy")
+(keywords "convenience" "list" "github" "emoji" "display")
 
 (package-file "emoji-github.el")
 
