@@ -1,6 +1,6 @@
 ;;; emoji-github.el --- Display list of GitHub's emoji.  (cheat sheet)  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Shen, Jen-Chieh
+;; Copyright (C) 2020-2024  Shen, Jen-Chieh
 ;; Created date 2020-03-05 10:58:18
 
 ;; Author: Shen, Jen-Chieh <jcs090218@gmail.com>
