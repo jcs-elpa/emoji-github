@@ -1,3 +1,5 @@
+;; -*- mode: eask; lexical-binding: t -*-
+
 (package "emoji-github"
          "0.2.3"
          "Display list of GitHub's emoji.  (cheat sheet)")
